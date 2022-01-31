@@ -4,6 +4,10 @@
 require_once ("connect.php");
 $fields = $mysqli->query("SELECT * FROM fields");
 $doctors = $mysqli->query("SELECT * FROM doctors");
+
+if (isset($_GET['page'])){
+    echo $_GET['page'];
+}
 ?>
 
 <!--              ВЫВОД ФОРМЫ ПОИСКА JS-->
@@ -290,6 +294,8 @@ foreach ($quer as $doctor) {
     echo "<td ><button class='remove_sql' value=" . $doctor["id"] . " type='button'>X</button></td>";
     echo "</tr>";
 }
+
+
 
 
 ?>
