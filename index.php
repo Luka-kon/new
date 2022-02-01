@@ -3,11 +3,9 @@
 <?php
 require_once ("connect.php");
 $fields = $mysqli->query("SELECT * FROM fields");
-$doctors = $mysqli->query("SELECT * FROM doctors");
+//$doctors = $mysqli->query("SELECT * FROM doctors");
 
-if (isset($_GET['page'])){
-    echo $_GET['page'];
-}
+
 ?>
 
 <!--              ВЫВОД ФОРМЫ ПОИСКА JS-->
@@ -16,8 +14,8 @@ if (isset($_GET['page'])){
     <link rel="stylesheet" href="css/style.css">
     <div class="filtforms">
 <?php
-$search="SELECT * FROM doctors LIMIT 0, 10";
-$num = 0;
+//$search="SELECT * FROM doctors LIMIT 0, 10";
+//$num = 0;
         foreach ($fields as $tab) {
 //            if ($tab["field"] == "id"){
 ////                echo "<td></td>";
@@ -86,9 +84,9 @@ $num = 0;
                 echo '<td><input type="text" data-value="' . $tab["field"]  . '" placeholder="' . $tab["describe_ua"]  . '"></td>';
         }
         echo "<td><button class='add_sql' type='button'>+</button></td>";
-        if ($_POST["val"]){
-            echo $_POST["val"];
-        }
+      //  if ($_POST["val"]){
+       //     echo $_POST["val"];
+      //  }
         ?>
 
     </tr>
@@ -172,7 +170,8 @@ function link_bar($page, $pages_count)
 
 
         if (!empty($_POST['id'])){
-            $search=$search." `id` LIKE '%".$_POST['id']."%'";
+           // $search=$search." `id` LIKE '%".$_POST['id']."%'";
+           //$_GET['page'] = 1;
 
         }
         if (!empty($_POST['fio_doc'])){
@@ -181,8 +180,7 @@ function link_bar($page, $pages_count)
         }
 
         if (!empty($_POST['year_b'])){
-            $search=$search." AND `year_b` LIKE '%".$_POST['year_b']."'";
-
+            $search=$search." AND `year_b` LIKE '%".$_POST['year_b']."%'";
         }
 
         if (!empty($_POST['year_d']) ){
@@ -249,13 +247,24 @@ function link_bar($page, $pages_count)
 
     }
 
-link_bar($page, $pages_count);
-$quer = $mysqli->query($search);
+//link_bar($page, $pages_count);
+//$quer = $mysqli->query($search);
+echo http_build_query(array("page" => 1));
 
-foreach ($quer as $tab){
+if (isset($_GET['page'])){
 
-}
-foreach ($fields as $tab) {
+$quer = table ($mysqli,
+    $_GET['page'],
+    $_GET['per_page'],
+    $_POST['fio_doc'],
+    $year_b = 0,
+    $year_d = 0,
+    $medwork = 0,
+    $discipline = 0,
+    $comment = 0
+);
+
+    foreach ($fields as $tab) {
     if ($tab["field"] !== "id") {
         echo "<th>" . $tab["describe_ua"] . "</th>";
     }
@@ -293,6 +302,55 @@ foreach ($quer as $doctor) {
     }
     echo "<td ><button class='remove_sql' value=" . $doctor["id"] . " type='button'>X</button></td>";
     echo "</tr>";
+}
+}
+function table ($mysqli, $page = 0, $per_page = 0, $fio_doc = 0, $year_b = 0, $year_d = 0, $medwork = 0, $discipline = 0, $comment = 0){
+    $search="";
+    if ($fio_doc != 0){
+        $search=$search." AND `fio_doc` LIKE '%" . $fio_doc . "%'";
+    }
+
+    if ($year_b != 0){
+        $search=$search." AND `year_b` LIKE '%" . $year_b . "%'";
+    }
+
+    if ($year_d != 0){
+        $search=$search." AND `year_d` LIKE '%" . $year_d . "%'";
+    }
+
+    if ($medwork != 0){
+        $search=$search." AND `medwork` LIKE '%" . $medwork . "%'";
+
+    }
+
+    if ($discipline != 0){
+        $search=$search." AND `discipline` LIKE '%" . $discipline . "%'";
+
+    }
+
+    if ($comment != 0){
+        $search=$search." AND `comment` LIKE '%" . $comment . "%'";
+    }
+
+    $search=trim($search," AND");
+    $search="SELECT * FROM `doctors` WHERE".$search;
+    //$search=$search." limit '.$start_pos.', '.$perpage";
+    $search=trim($search," WHERE");
+
+    // Общее количество информации
+    $cou = $mysqli->query($search) or die('error! Записей не найдено!');
+    $count = $cou->num_rows;
+    $pages_count = ceil($count / $per_page); // Количество страниц
+
+// Если номер страницы оказался больше количества страниц
+    if ($page > $pages_count) $page = $pages_count;
+    $start_pos = ($page - 1) * $per_page; // Начальная позиция, для запроса к БД
+
+    $search = $search." LIMIT $start_pos, $per_page";
+
+    $result = $mysqli->query($search) or die('error! Записей не найдено!');
+    var_dump($search);
+    return $result;
 }
 
 
