@@ -5,6 +5,7 @@ require_once ("connect.php");
 $fields = $mysqli->query("SELECT * FROM fields");
 $doctors = $mysqli->query("SELECT * FROM doctors");
 
+require_once ("function.php");
 if (isset($_GET['page'])){
     echo $_GET['page'];
 }
@@ -150,66 +151,14 @@ $num = 0;
 
     if (isset($_POST['search_but'])){
         $num=0;
-
-        $search="";
-
-
-
-
-
-        if (!empty($_POST['id'])){
-            $search=$search." `id` LIKE '%".$_POST['id']."%'";
-
-        }
-        if (!empty($_POST['fio_doc'])){
-            $search=$search." AND `fio_doc` LIKE '%".$_POST['fio_doc']."%'";
-
-        }
-
-        if (!empty($_POST['year_b'])){
-            $search=$search." AND `year_b` LIKE '%".$_POST['year_b']."%'";
-
-        }
-
-        if (!empty($_POST['year_d']) ){
-            $search=$search." AND `year_d` LIKE '%".$_POST['year_d']."%'";
-
-        }
-
-        if (!empty($_POST['medwork'])){
-            $search=$search." AND `medwork` LIKE '%".$_POST['medwork']."%'";
-
-        }
-
-        if (!empty($_POST['discipline'])){
-            $search=$search." AND `discipline` LIKE '%".$_POST['discipline']."%'";
-
-        }
-
-        if (!empty($_POST['comment'])){
-            $search=$search." AND `comment` LIKE '%".$_POST['comment']."%'";
-
-        }
-
-        $search=trim($search," AND");
-        $search="SELECT * FROM `doctors` WHERE".$search;
-
-        $search=trim($search," WHERE");
-
-        //            ФУНКЦИЯ ДЛЯ ПОСТРАНИЧНОГО ВЫВОДА
-        $perpage = $_POST['colvo']; // Количество отображаемых данных из БД
-
-        if (empty(@$_GET['page']) || ($_GET['page'] <= 0)) {
-            $page = 1;
-        } else {
-            $page = (int) $_GET['page']; // Считывание текущей страницы
-
-        }
-
-
-
-
-        $quer = $mysqli->query($search);
+        $id=$_POST['id'];
+        $fio_doc=$_POST['fio_doc'];
+        $year_b=$_POST['year_b'];
+        $year_d=$_POST['year_d'];
+        $medwork=$_POST['medwork'];
+        $discipline=$_POST['discipline'];
+        $comment=$_POST['comment'];
+       $quer = getTable($id, $fio_doc, $year_b, $year_d, $medwork, $discipline, $comment);
 
 
         foreach ($fields as $tab) {
