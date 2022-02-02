@@ -14,48 +14,52 @@ if (isset($_GET['page'])){
 <!--              ВЫВОД ФОРМЫ ПОИСКА JS-->
 <html>
 <head>
-    <link rel="stylesheet" href="css/style.css">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
         <head/>
 <body>
 
 <!--       ФОРМА ПОИСКА НА PHP-->
 
-
-<div style="float: left; margin-left: 150px">
-    <h3>Форма пошуку даних</h3>
-    <?php
-    $num = 0;
-
-    echo '<form style="" method="post">';
-    echo '<input name="id" placeholder="№"/> <br/>';
-    echo '<input name="fio_doc" placeholder="ПІБ"/> <br/>';
-    echo '<input name="year_b" placeholder="Рік народження"/> <br/>';
-    echo '<input name="year_d" placeholder="Рік смерті"/> <br/>';
-    echo '<input name="medwork" placeholder="Працював в медині?"/> <br/>';
-    echo '<input name="discipline" placeholder="Дисципліна"/> <br/>';
-    echo '<input name="comment" placeholder="Коментар"/> <br/>';
+<div class="row">
+<div style="margin-left: 50px;"  class="col">
+    <h2>Форма пошуку</h2>
 
 
-    echo '<input name="search_but" type="submit" value="Відправити запит"/><br/>';
-    echo '<input name="ubiley" type="submit" value="Передивитись юбілярів"/><br/>';
-    echo '</form>';
-    ?>
+
+   <form style="" method="post">
+
+    <input name="fio_doc" placeholder="ПІБ"/> <br/>
+    <input name="year_b" placeholder="Рік народження"/> <br/>
+    <input name="year_d" placeholder="Рік смерті"/> <br/>
+    <input name="medwork" placeholder="Працював в медині?"/> <br/>
+    <input name="discipline" placeholder="Дисципліна"/> <br/>
+    <input name="comment" placeholder="Коментар"/> <br/><br/>
+    <input name="search_but" type="submit" value="Відправити запит"/><br/>
+
+    </form>
+
 </div>
-
-
-    <div class="filtforms" style="float: left; margin-left:400px"" >
-        <h3>Форма фільтрації знайдених даних</h3>
+<div class="col">
+    <br/><br/><br/>
+    <form method="post">
+        <input name="ubiley" type="submit" value="Передивитись юбілярів"/>
+    </form>
+</div>
+    <div class="filtforms col" >
+        <h2>Форма фільтрації</h2>
     <?php
-$search="SELECT * FROM doctors";
-$num = 0;
+
         foreach ($fields as $tab) {
-
-                echo '<div class="filtform"><input placeholder="' . $tab["describe_ua"] . '" type="text" />   </div>';
+            if ($tab["field"] != "id"){
+        echo '<div class="filtform"><input placeholder="' . $tab["describe_ua"] . '" type="text" />   </div>';
+            }
         }
-
+    //$search="SELECT * FROM doctors";
+    //$num = 0;
 ?>
-</div>
+</div></div>
 
 
 
@@ -73,18 +77,15 @@ $num = 0;
                 //echo "<td></td>";
             }
             elseif ($tab["field"] == "comment" || $tab["field"] == "discipline"){
-                echo '<td><textarea data-value="' . $tab["field"]  . '"></textarea></td>';
+                echo '<td><label>' . $tab["describe_ua"] . '</label><textarea data-value="' . $tab["field"]  . '"></textarea></td>';
             }
             elseif ($tab["field"] == "medwork"){
                 echo '<td> <select data-value="' . $tab["field"]  . '"><option value="1">Да</option><option value="0">Нет</option></select></td>';
             }
             else
-                echo '<td><input type="text" data-value="' . $tab["field"]  . '" placeholder="' . $tab["describe_ua"]  . '"></td>';
+                echo '<td><label>' . $tab["describe_ua"] . '</label><br><input type="text" data-value="' . $tab["field"]  . '" placeholder="' . $tab["describe_ua"]  . '"></td>';
         }
         echo "<td><button class='add_sql' type='button'>+</button></td>";
-        if ($_POST["val"]){
-            echo $_POST["val"];
-        }
         ?>
 
     </tr>
@@ -151,14 +152,7 @@ $num = 0;
 
     if (isset($_POST['search_but'])){
         $num=0;
-        $id=$_POST['id'];
-        $fio_doc=$_POST['fio_doc'];
-        $year_b=$_POST['year_b'];
-        $year_d=$_POST['year_d'];
-        $medwork=$_POST['medwork'];
-        $discipline=$_POST['discipline'];
-        $comment=$_POST['comment'];
-       $quer = getTable($id, $fio_doc, $year_b, $year_d, $medwork, $discipline, $comment);
+       $quer = getTable($mysqli, $_POST['id'], $_POST['fio_doc'], $_POST['year_b'], $_POST['year_d'], $_POST['medwork'], $_POST['discipline'], $_POST['comment']);
 
 
         foreach ($fields as $tab) {

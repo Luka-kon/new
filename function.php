@@ -1,44 +1,44 @@
 <?php
 require_once ("connect.php");
 
-function getTable($id=0, $fio_doc=0, $year_b=0, $year_d=0, $medwork=0, $discipline=0, $comment=0){
-
+function getTable($mysqli, $id="", $fio_doc="", $year_b="", $year_d="", $medwork="", $discipline="", $comment=""){
     $search="";
-
-
-
-
-
-    if ($id!=0){
+    if ($id != ""){
         $search=$search." `id` LIKE '%".$id."%'";
 
     }
-    if ($fio_doc!=0){
+    if ($fio_doc!= ""){
         $search=$search." AND `fio_doc` LIKE '%".$fio_doc."%'";
 
     }
 
-    if ($year_b!=0){
+    if ($year_b!= ""){
         $search=$search." AND `year_b` LIKE '%".$year_b."%'";
 
     }
 
-    if ($year_d!=0){
+    if ($year_d!= ""){
         $search=$search." AND `year_d` LIKE '%".$year_d."%'";
 
     }
 
-    if ($medwork!=0){
+    if ($medwork!= ""){
+        if ($medwork == "Працював"){
+            $medwork = 1;
+        }
+        if ($medwork == "Не працював"){
+            $medwork = 0;
+        }
         $search=$search." AND `medwork` LIKE '%".$medwork."%'";
 
     }
 
-    if ($discipline!=0){
+    if ($discipline!= ""){
         $search=$search." AND `discipline` LIKE '%".$discipline."%'";
 
     }
 
-    if ($comment!=0){
+    if ($comment!= ""){
         $search=$search." AND `comment` LIKE '%".$comment."%'";
 
     }
@@ -47,13 +47,7 @@ function getTable($id=0, $fio_doc=0, $year_b=0, $year_d=0, $medwork=0, $discipli
     $search="SELECT * FROM `doctors` WHERE".$search;
 
     $search=trim($search," WHERE");
-
-
-
-
-
-    var_dump($search);
-    $quer = $mysqli->query($search);
+    $quer = $mysqli->query($search . "ORDER BY fio_doc");
     return $quer;
 
 }

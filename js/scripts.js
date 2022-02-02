@@ -4,7 +4,7 @@ $(function () {
     $filtforms.on("keyup", function() {
 
         $("#tab tr").show();
-        console.log(1);
+        //console.log(1);
 
         $filtforms.each(function(index, value) {
         let val = value.firstElementChild.value.toLowerCase();
@@ -12,10 +12,10 @@ $(function () {
             $("#tab tr").filter(function() {
 
                 if (val != ""){
-                let hh = $(this).children().eq(index).text().toLowerCase();
+                let hh = $(this).children().eq(index + 1).text().toLowerCase();
                     if (hh.indexOf(val) < 0) {
                     $(this).hide();
-                    console.log(2);
+                    console.log(val);
                     }
                 }
             });
@@ -68,14 +68,14 @@ $('.remove_sql').click(function f() {
           //  }
             //console.log($('.add :input').eq(i).eq(0).data("value"));
            if (len == norm){
-            console.log(post1.slice(0, -1));
-            console.log(post2.slice(0, -1));
+           // console.log(post1.slice(0, -1));
+           // console.log(post2.slice(0, -1));
                 $.ajax({
                     type: "POST",
                     url: "ajax_add.php",
                     data: "fild=" + post1.slice(0, -1) + "&val=" + post2.slice(0, -1),
                     success: function (response) {
-                        console.log(response);
+                      //  console.log(response);
                         location.reload();
                     }
                 });
@@ -90,11 +90,12 @@ $('.remove_sql').click(function f() {
         let $text = $( this );
         let text = $( this ).html();
         let textinp =  "<textarea>" + $( this ).html().replaceAll('<br>', '') + "</textarea>";
-        let texttd =  "<td>" + $( this ).html() + "</td>";
+        let texttd =  "<td>" + $( this ).html() + "</td>",
+        filt = $text.data("filt");
 
-            if (!$( this ).children("textarea").val()){
+            if (!$( this ).children("textarea").val() && filt !== undefined){
              $( this ).html(textinp);
-                console.log($( this ).children("textarea").focus());
+               // console.log($( this ).children("textarea").focus());
             }
 
             $( this ).children("textarea").val();
@@ -102,8 +103,8 @@ $('.remove_sql').click(function f() {
             $text.html($(this).val());
 
             let new_text = ($(this).val()),
-                td_id = $text.parent().data("id"),
-                filt = $text.data("filt");
+                td_id = $text.parent().data("id");
+
 
 
             if(new_text == ""){
@@ -112,8 +113,8 @@ $('.remove_sql').click(function f() {
                 if(new_text == "0"){
                     new_text = "00";
                 }
-            console.log(new_text + "= Новый текст");
-            console.log(text + "= текст");
+           // console.log(new_text + "= Новый текст");
+          //  console.log(text + "= текст");
 
 
             if (new_text != text){
@@ -123,7 +124,7 @@ $('.remove_sql').click(function f() {
                 url: "ajax_update.php",
                 data: "new_text=" + new_text + "&td_id=" + td_id + "&filt=" + filt,
                 success: function (response) {
-                    console.log(response);
+                 //   console.log(response);
 
                 }
             });
